@@ -2,12 +2,14 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk-17-corretto'
+        // Make sure this matches the name of the JDK in Jenkins Global Tool Configuration
+        jdk 'java-17'
         maven 'Maven3'
     }
 
     stages {
-        stage('Checkout Code') {
+
+        stage('Checkout from GitHub') {
             steps {
                 git branch: 'master',
                     url: 'https://github.com/The-Puneet-Kumar/addressbook-cicd-project.git'
@@ -16,20 +18,32 @@ pipeline {
 
         stage('Verify Java Version') {
             steps {
-                sh 'java --version'
+                sh 'java -version'
             }
         }
 
-        stage('Build Maven App') {
+        stage('Maven Clean') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build Successful with JDK 17'
+            echo '✅ Build Successful with JDK 17 Corretto'
         }
         failure {
             echo '❌ Build Failed'
