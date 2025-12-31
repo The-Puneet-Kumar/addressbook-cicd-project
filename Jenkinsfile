@@ -7,15 +7,20 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout from GitHub') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'master',
-                    url: 'https://github.com/USERNAME/REPOSITORY.git'
+                    url: 'https://github.com/The-Puneet-Kumar/addressbook-cicd-project.git'
             }
         }
 
-        stage('Build Maven Application') {
+        stage('Verify Java Version') {
+            steps {
+                sh 'java --version'
+            }
+        }
+
+        stage('Build Maven App') {
             steps {
                 sh 'mvn clean package'
             }
@@ -24,10 +29,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build successful using JDK 17 Amazon Corretto'
+            echo '✅ Build Successful with JDK 17'
         }
         failure {
-            echo '❌ Build failed'
+            echo '❌ Build Failed'
         }
     }
 }
